@@ -10,6 +10,9 @@ func Test(t *testing.T) {
 	if st.Size() != 3 {
 		t.Errorf("Set should contain three elements")
 	}
+	if st.Show(0) != "7 4 3 " {
+		t.Errorf("Set does not show as intended")
+	}
 	st.Remove(3)
 	if st.Size() != 2 {
 		t.Errorf("Set should contain two elements")

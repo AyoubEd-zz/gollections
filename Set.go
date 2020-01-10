@@ -37,11 +37,15 @@ func (s *set) Size() int {
 	return len(s.m)
 }
 
-func (s *set) Show() {
+func (s *set) Show(vals ...int) string {
 	mp := s.m
+	str := ""
 
 	for key, _ := range mp {
-		fmt.Printf("%v ", key)	
+		str += fmt.Sprintf("%v ", key)	
 	}
-	fmt.Printf("\n")
+	if len(vals) == 0 || vals[0] != 0 {
+		fmt.Printf(str + "\n")
+	}
+	return str
 }
