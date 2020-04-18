@@ -2,6 +2,7 @@ package hashmap
 
 import (
 	"errors"
+	"math"
 
 	"github.com/go-ego/murmur"
 )
@@ -29,17 +30,24 @@ func NewHashMap(size uint32) (*HashMap, error) {
 	return mp, nil
 }
 
-// mapKeyToIndex maps a key to an index in the hash table
+// hashKey uses Murmur hashing algorithm and returns a strings hash
 func hashKey(s string) uint32 {
 	return murmur.Murmur3([]byte(s), 0)
 }
 
+func getHashTableIndex(key string, size uint32) uint32 {
+	h := hashKey(key)
+	mask := uint32(math.Log2(float64(size))+1) / 2
+	return h & (1<<mask - 1)
+}
+
 func (mp *HashMap) Set(key string, value interface{}) error {
 	mp.count++
-	index := hashKey(key)
-	B := mp.buckets[index%mp.size]
+	index := getHashTableIndex(key, mp.size)
+	B := mp.buckets[index]
+
 	if B == nil {
-		mp.buckets[index%mp.size] = &Node{key, value, nil}
+		mp.buckets[index] = &Node{key, value, nil}
 	} else {
 		for B.next != nil {
 			B = B.next
@@ -51,8 +59,9 @@ func (mp *HashMap) Set(key string, value interface{}) error {
 }
 
 func (mp *HashMap) Get(key string) interface{} {
-	index := hashKey(key)
-	B := mp.buckets[index%mp.size]
+	index := getHashTableIndex(key, mp.size)
+	B := mp.buckets[index]
+
 	for B != nil {
 		if B.key == key {
 			return B.value
