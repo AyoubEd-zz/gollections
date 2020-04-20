@@ -32,12 +32,14 @@ func TestUseMapNoResize(t *testing.T) {
 
 	assert.Equal(t, mp.Get("aaa"), 1)
 	assert.Equal(t, mp.Get("bb"), 0)
-}
+	assert.Equal(t, mp.Get("c"), nil)
+	assert.Equal(t, mp.Len(), 2)
 
-func getFromMap(t *testing.T) {
+	//3. Test delete key
 
-}
+	mp.Del("aaa")
 
-func deleteFromMap(t *testing.T) {
-
+	assert.Equal(t, mp.Get("aaa"), nil)
+	assert.Equal(t, mp.Get("bb"), 0)
+	assert.Equal(t, mp.Len(), 1)
 }

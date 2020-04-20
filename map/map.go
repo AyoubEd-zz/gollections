@@ -72,7 +72,22 @@ func (mp *HashMap) Get(key string) interface{} {
 	return nil
 }
 
-func (mp *HashMap) Del(key interface{}) error {
+func (mp *HashMap) Del(key string) error {
+	mp.count--
+	index := getHashTableIndex(key, mp.size)
+	B := mp.buckets[index]
+	nB := &Node{"", nil, nil}
+	head := nB
+
+	for B != nil {
+		if B.key != key {
+			nB.next = &Node{B.key, B.value, nil}
+			nB = nB.next
+		}
+		B = B.next
+	}
+
+	mp.buckets[index] = head.next
 	return nil
 }
 
